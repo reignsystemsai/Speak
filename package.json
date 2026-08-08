@@ -1,1 +1,19 @@
+{
+  "name": "speak-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@livekit/server-sdk": "^2.13.3",
+    "@supabase/supabase-js": "^2.55.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  }
+}
 
