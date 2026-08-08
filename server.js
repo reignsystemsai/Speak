@@ -3,6 +3,8 @@ import express from "express";
 import { createClient } from "@supabase/supabase-js";
 import { AccessToken } from "livekit-server-sdk";
 
+import { createCallSessionsRouter } from "./src/server/routes/callSessions.js";
+
 const requiredEnvironmentVariables = [
   "LIVEKIT_URL",
   "LIVEKIT_API_KEY",
@@ -37,6 +39,8 @@ const supabase = createClient(
 
 app.use(cors());
 app.use(express.json());
+
+app.use("/call-sessions", createCallSessionsRouter(supabase));
 
 app.get("/health", (_request, response) => {
   response.status(200).json({ status: "ok" });
