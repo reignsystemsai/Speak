@@ -10,7 +10,8 @@
     "ios": {
       "icon": "./assets/expo.icon",
       "infoPlist": {
-        "NSMicrophoneUsageDescription": "Speak uses your microphone so you can make voice calls."
+        "NSMicrophoneUsageDescription": "Speak uses your microphone so you can make voice calls.",
+        "NSCameraUsageDescription": "Speak uses your camera so you can make video calls."
       }
     },
     "android": {
