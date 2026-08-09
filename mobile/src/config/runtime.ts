@@ -1,23 +1,25 @@
-export interface RuntimeConfig {
-  supabaseUrl: string;
-  supabaseAnonKey: string;
-  backendUrl: string;
-}
+import Constants from 'expo-constants';
 
-function getRequiredEnv(name: keyof RuntimeConfig): string {
-  const value = process.env[name === 'supabaseUrl' ? 'EXPO_PUBLIC_SUPABASE_URL' : name === 'supabaseAnonKey' ? 'EXPO_PUBLIC_SUPABASE_ANON_KEY' : 'EXPO_PUBLIC_BACKEND_URL'];
+export const API_BASE_URL = (
+  process.env.EXPO_PUBLIC_API_BASE_URL?.trim() ||
+  'https://interpreter-api-fycw.onrender.com'
+).replace(/\/+$/, '');
 
-  if (!value) {
-    throw new Error(`Missing required runtime configuration: ${name}`);
-  }
+const publicConfig = Constants.expoConfig?.extra ?? {};
 
-  return value;
-}
+export const SUPABASE_URL =
+  typeof publicConfig.supabaseUrl === 'string' ? publicConfig.supabaseUrl.trim() : '';
+export const SUPABASE_PUBLISHABLE_KEY =
+  typeof publicConfig.supabasePublishableKey === 'string'
+    ? publicConfig.supabasePublishableKey.trim()
+    : '';
+export const LIVEKIT_URL =
+  typeof publicConfig.livekitUrl === 'string' ? publicConfig.livekitUrl.trim() : '';
+export const REVENUECAT_ANDROID_API_KEY =
+  process.env.EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY?.trim() ?? '';
 
-export const runtimeConfig: RuntimeConfig = {
-  supabaseUrl: getRequiredEnv('supabaseUrl'),
-  supabaseAnonKey: getRequiredEnv('supabaseAnonKey'),
-  backendUrl: getRequiredEnv('backendUrl'),
-};
-
-export const { supabaseUrl, supabaseAnonKey, backendUrl } = runtimeConfig;
+export const ACCOUNT_SERVICES_CONFIGURED = Boolean(
+  SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY,
+);
+export const LEGAL_REVIEW_APPROVED =
+  process.env.EXPO_PUBLIC_LEGAL_REVIEW_APPROVED === 'true';

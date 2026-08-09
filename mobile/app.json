@@ -1,72 +1,90 @@
 {
   "expo": {
-    "name": "Interpreter Speak",
-    "slug": "speakai",
+    "name": "interpreter",
+    "slug": "interpreter-ai",
+    "owner": "www.interpreter.ai",
     "version": "1.1.0",
+    "icon": "./assets/interpreter-mark-clean.png",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "mobile",
-    "userInterfaceStyle": "automatic",
+    "scheme": "interpreterai",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
     "ios": {
-      "icon": "./assets/images/icon.png",
+      "supportsTablet": true,
+      "bundleIdentifier": "ai.interpreter.mobile",
+      "buildNumber": "19",
       "infoPlist": {
-        "NSMicrophoneUsageDescription": "Speak uses your microphone so you can make voice calls.",
-        "NSCameraUsageDescription": "Speak uses your camera so you can make video calls.",
-        "ITSAppUsesNonExemptEncryption": false
-      },
-      "bitcode": false,
-      "bundleIdentifier": "ai.interpreter.mobile"
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSMicrophoneUsageDescription": "Interpreter.ai uses the microphone for translation and voice or video calls.",
+        "NSCameraUsageDescription": "Interpreter.ai uses the camera when you start or accept a video call.",
+        "UIBackgroundModes": [
+          "audio",
+          "remote-notification",
+          "voip"
+        ]
+      }
     },
     "android": {
+      "package": "ai.interpreter.mobile",
+      "edgeToEdgeEnabled": true,
+      "versionCode": 17,
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "foregroundImage": "./assets/interpreter-mark-clean.png",
+        "backgroundColor": "#F8FBFF"
       },
-      "predictiveBackGestureEnabled": false,
       "permissions": [
-        "android.permission.ACCESS_NETWORK_STATE",
-        "android.permission.CAMERA",
-        "android.permission.INTERNET",
-        "android.permission.MODIFY_AUDIO_SETTINGS",
         "android.permission.RECORD_AUDIO",
-        "android.permission.SYSTEM_ALERT_WINDOW",
-        "android.permission.WAKE_LOCK",
-        "android.permission.BLUETOOTH"
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.CAMERA",
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.READ_CONTACTS"
+      ],
+      "blockedPermissions": [
+        "android.permission.WRITE_CONTACTS"
       ]
-    },
-    "web": {
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
       "expo-router",
-      "@livekit/react-native-expo-plugin",
-      "@config-plugins/react-native-webrtc",
+      "expo-dev-client",
+      "expo-secure-store",
       [
-        "expo-splash-screen",
+        "expo-contacts",
         {
-          "backgroundColor": "#208AEF",
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 76
+          "contactsPermission": "Allow Interpreter to access your contacts only when you choose My Contacts."
         }
       ],
-      "expo-font",
-      "expo-image",
-      "expo-status-bar",
-      "expo-web-browser"
+      [
+        "expo-notifications",
+        {
+          "color": "#075BFF"
+        }
+      ],
+      [
+        "@livekit/react-native-expo-plugin",
+        {
+          "android": {
+            "audioType": "communication"
+          },
+          "ios": {
+            "enableMultitaskingCameraAccess": false
+          }
+        }
+      ],
+      "@config-plugins/react-native-webrtc"
     ],
+    "splash": {
+      "image": "./assets/interpreter-mark-clean.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#F8FBFF"
+    },
     "experiments": {
-      "typedRoutes": true,
-      "reactCompiler": true
+      "typedRoutes": true
     },
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "73c6c6a9-fb60-493d-b950-0247c4203aa5"
+        "projectId": "151f64e9-74cf-4482-8ebe-a5dedb489afd"
       }
-    },
-    "owner": "speakai"
+    }
   }
 }

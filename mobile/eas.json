@@ -1,7 +1,6 @@
 {
   "cli": {
-    "version": ">= 21.7.0",
-    "appVersionSource": "remote"
+    "version": ">= 16.0.0"
   },
   "build": {
     "development": {
@@ -9,13 +8,26 @@
       "distribution": "internal"
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_MVP_DEVICE_PHONE_NUMBER": "+16892828783"
+      },
+      "android": {
+        "buildType": "apk"
+      }
     },
     "production": {
-      "autoIncrement": true
+      "environment": "preview",
+      "env": {
+        "EXPO_PUBLIC_MVP_DEVICE_PHONE_NUMBER": "+13055189384"
+      }
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "ascAppId": "6798001698"
+      }
+    }
   }
 }

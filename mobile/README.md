@@ -1,56 +1,111 @@
-# Welcome to your Expo app 👋
+# Interpreter.ai Android app
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Expo SDK 54 client for the production Interpreter.ai service. The app requests a
+short-lived Realtime credential from the existing Render backend and connects to
+OpenAI directly over WebRTC. The permanent `OPENAI_API_KEY` is never bundled into
+the app.
 
-## Get started
+Production backend:
 
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```text
+https://interpreter-api-fycw.onrender.com
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+For local development only, `EXPO_PUBLIC_API_BASE_URL` may point to another
+Interpreter backend. Never put `OPENAI_API_KEY` in a mobile environment file.
 
-### Other setup steps
+## Install and validate
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+```powershell
+cd mobile
+pnpm install --frozen-lockfile
+pnpm typecheck
+pnpm exec expo config --type public
+```
 
-## Learn more
+Native WebRTC and audio routing are required, so Expo Go is not supported.
 
-To learn more about developing your project with Expo, look at the following resources:
+## Build an installable Android APK
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```powershell
+cd mobile
+pnpm dlx eas-cli build --platform android --profile preview
+```
 
-## Join the community
+The `preview` profile produces an internal-distribution APK. Open the EAS build
+URL on the Android phone, download the APK, allow installation from the browser
+when Android asks, and install **Interpreter.ai**.
 
-Join our community of developers creating universal apps.
+## Test the app
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+1. Open **Interpreter.ai**.
+2. Set the language for Speaker 1 and Speaker 2. The two rows mirror the
+   opposite translation directions automatically.
+3. Tap **Start Conversation** and allow microphone access.
+4. Speak naturally in your language. Confirm only the selected-language
+   translation is spoken and the orb reflects the current state.
+5. Have the second speaker reply in the selected language. Confirm only the
+   translation into your detected language is spoken.
+6. Alternate speakers for several turns and confirm no playback feedback loop.
+7. Confirm no transcript or developer information appears on the home screen.
+8. Tap **End Conversation**, then start another conversation and confirm
+   microphone/audio reconnect correctly.
+
+The microphone is paused while translated audio plays and resumes shortly after
+playback ends to reduce speaker echo and self-triggering.
+
+## Accounts, Interpreter Pro, and notifications
+
+The app includes a modular Supabase authentication, RevenueCat subscription,
+and Expo notification foundation. These features fail closed while configuration
+is absent; the live interpreter continues to use the production backend.
+
+Set only public mobile values in the EAS environment:
+
+```text
+SUPABASE_URL
+SUPABASE_PUBLISHABLE_KEY
+LIVEKIT_URL
+EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY
+EXPO_PUBLIC_LEGAL_REVIEW_APPROVED=false
+```
+
+The active Expo config copies only the Supabase URL, publishable key, and LiveKit
+URL into public app configuration. Never place `SUPABASE_SECRET_KEY`,
+`LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET`, RevenueCat webhook authorization, or the
+OpenAI API key in Expo configuration. Configure Google Play and RevenueCat products
+with IDs `interpreter_pro_monthly` and `interpreter_unlimited_monthly`.
+
+Account creation and customer-facing legal links stay disabled while
+`EXPO_PUBLIC_LEGAL_REVIEW_APPROVED` is false. Change it only after final Terms and
+Privacy pages have completed legal review and are hosted at stable public URLs.
+
+- Free: 3 Interpreter Minutes every rolling 30-day cycle, voice/video calls, basic AI voices.
+- Interpreter Pro: $9.99/month, 500 minutes/month, seven-day trial.
+- Interpreter Unlimited: $19.99/month, 2,000 minutes/month under fair use,
+  seven-day trial.
+- Paid unused minutes roll over for one billing cycle and then expire.
+
+## Test an interpreted call
+
+This test requires two authenticated Interpreter accounts on two physical
+devices and a deployed backend containing the Phase 4 server bridge.
+
+1. On the home screen, set each speaker's **Language Spoken** and **Language
+   Heard** preferences.
+2. Open the existing Phone overlay, select a contact, and start a Voice Call,
+   Video Call, or Business Video Call.
+3. Accept on the second device. Wait until the call reports that interpretation
+   is ready, then have Speaker 1 speak.
+4. Confirm Speaker 2 hears only the translated audio and both devices show the
+   latest original and translated transcript in the active-call panel.
+5. Have Speaker 2 reply, then alternate directions and interrupt translated
+   playback to exercise barge-in and overlapping-speech handling.
+6. Briefly disable and restore network access. Confirm the call reports the
+   interruption and reconnects or offers **Retry interpretation** while keeping
+   the call alive when possible.
+7. End the call and confirm the transcript panel disappears. Transcript content
+   must not appear in call history or Supabase.
+
+If interpretation cannot start or its allowance is exhausted, the call falls
+back to direct participant audio rather than ending the LiveKit call.

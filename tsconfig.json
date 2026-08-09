@@ -1,10 +1,6 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "react-native-webrtc": ["src/types/react-native-webrtc-compat.d.ts"]
-    },
     "strict": true,
     "noUncheckedIndexedAccess": true
   },
